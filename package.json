@@ -1,0 +1,23 @@
+{
+  "name": "prescience-server",
+  "version": "1.0.0",
+  "description": "prescience api server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yash A. Narnaware",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "jshint": "^2.11.0-rc1",
+    "method-override": "^2.3.7",
+    "morgan": "^1.7.0",
+    "mysql": "^2.17.1",
+    "natural": "^0.6.3",
+    "q": "^1.5.1"
+  }
+}
