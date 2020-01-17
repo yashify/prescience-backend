@@ -20,28 +20,81 @@ let tokenizer = new natural.WordTokenizer();
 
 let processTokens = function (tokens, callback) {
 
+    let sentences = ["prescience", "maximess", "maximessians"];
     let dept = ["hr", "sales", "finance"];
     let tenure = ["january", "february", "march", "april", "may", "june", "july", 
                     "august", "september", "october", "november", "december",
                     "q1", "q2", "q3", "q4"];
 
-    let queryParams = [];    
+    let filtered_sentence = tokens.filter(element => sentences.includes(element) ? element : "");
+    filtered_sentence = filtered_sentence != "" ? filtered_sentence[0] : "";
+
+    let queryParams = [];
+
+    if (filtered_sentence && filtered_sentence != ""){
+
+        queryParams['sentence'] = filtered_sentence;
+
+        processQueryFromSentence(queryParams, function (data) {
+            callback(data);
+        });
+
+    } else {
+        
+        let filtered_dept = tokens.filter(element => dept.includes(element) ? element : "");
+        filtered_dept = filtered_dept != "" ? filtered_dept[0] : "";
     
-    let filtered_dept = tokens.filter(element => dept.includes(element) ? element : "");
-    filtered_dept = filtered_dept != "" ? filtered_dept[0] : "";
-
-    let filtered_tenure = tokens.filter(element => tenure.includes(element) ? element : "");
-    filtered_tenure = filtered_tenure != "" ? filtered_tenure[0] : "";
-
-    console.log(filtered_dept, filtered_tenure);
-
-    queryParams['dept'] = filtered_dept;
-    queryParams['tenure'] = filtered_tenure;
+        let filtered_tenure = tokens.filter(element => tenure.includes(element) ? element : "");
+        filtered_tenure = filtered_tenure != "" ? filtered_tenure[0] : "";
     
-    processQueryFromToken(queryParams, function(data){
-        callback(data);
-    });    
+        console.log(filtered_dept, filtered_tenure);
+    
+        queryParams['dept'] = filtered_dept;
+        queryParams['tenure'] = filtered_tenure;
+        
+        processQueryFromToken(queryParams, function(data){
+            callback(data);
+        });    
+    }
 }
+
+let processQueryFromSentence = function (queryParams, callback) {
+    let res = {};
+    if (queryParams['sentence']) {
+        switch (queryParams['sentence']) {
+            case "prescience":
+                res.code = 200;
+                res.type = "sentence";
+                res.sentence = "PreScience is an AI enabled Business Analytics Tool integrated with Natural Language Search Engine.";
+                callback(res);
+                break;
+
+            case "maximess":
+                res.code = 200;
+                res.type = "sentence";
+                res.sentence = "A clan of talented geeks who work continuously to transform thoughts into reality.";
+                callback(res);
+                break;
+
+            case "maximessians":
+                res.code = 200;
+                res.type = "sentence";
+                res.sentence = "A clan of talented geeks who work continuously to transform thoughts into reality.";
+                callback(res);
+                break;
+
+                 
+        
+            default:
+                res.code = 400;
+                callback(res);
+                break;
+        }
+    } else {
+        res.code = 400;
+        callback(res);
+    }
+};
 
 let processQueryFromToken = function (queryParams, callback) { 
     let res = {};
@@ -76,6 +129,8 @@ let processQueryFromToken = function (queryParams, callback) {
                         callback(res);
                     } else {
                         console.log(err);
+                        res.code = 400;
+                        callback(res);
                     }
                 });
                 break;
@@ -97,6 +152,7 @@ let processQueryFromToken = function (queryParams, callback) {
                                 })
                                 res.data = graphData;
                                 res.dataset_name = "Domain";
+                                res.title = "HR report of hired employees for the month of " + queryParams['tenure'];
                                 res.viz_type = "pie"
                             } else {
                                 res.code = 400;
@@ -104,8 +160,13 @@ let processQueryFromToken = function (queryParams, callback) {
                             callback(res);
                         } else {
                             console.log(err);
+                            res.code = 400;
+                            callback(res);
                         }
                     });
+                } else {
+                    res.code = 400;
+                    callback(res);
                 }
                 break;
 
@@ -127,7 +188,7 @@ let processQueryFromToken = function (queryParams, callback) {
                                     "categories": categories,
                                     "data": cat_data
                                 };
-                                res.title = "Finance report for the month of " + queryParams['tenure'];
+                                res.title = "Finance report of expenditures for the month of " + queryParams['tenure'];
                                 res.yAxis = "Assets";
                                 res.viz_type = "column"
                             } else {
@@ -136,8 +197,13 @@ let processQueryFromToken = function (queryParams, callback) {
                             callback(res);
                         } else {
                             console.log(err);
+                            res.code = 400;
+                            callback(res);
                         }
                     });
+                } else {
+                    res.code = 400;
+                    callback(res);
                 }
                 break;
         
